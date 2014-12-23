@@ -4850,7 +4850,8 @@ public:
    * ------------------------------------------------------------ */
 
   virtual int memberconstantHandler(Node *n) {
-    String *symname = Getattr(n, "sym:name");
+    String *enumvalue_symname = Getattr(n,"enumvalueDeclaration:sym:name");
+    String *symname = (is_strong_or_scoped_enumitem(n) && enumvalue_symname) ? enumvalue_symname : Getattr(n, "sym:name");
     if (builtin && in_class) {
       Swig_save("builtin_memberconstantHandler", n, "pybuiltin:symname", NIL);
       Setattr(n, "pybuiltin:symname", symname);
