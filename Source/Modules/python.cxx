@@ -4791,8 +4791,14 @@ public:
     int result;
 
     if (shall_emit_scoped_enum(n)) {
+      // scoped (either int or strong)
       if (!ImportMode) {
 	if(!in_class) {
+	  if (shall_emit_strong_enum(n) && Getattr(n, "symtab")) {
+	    Setattr(n, "allocate:default_constructor", "1");
+	    Setattr(n, "allocate:default_destructor", "1");
+	  }
+	  Setattr(n,"python:proxy",Getattr(n,"sym:name"));
 	  result = classDeclaration(n);
 	} else {
 	  Swig_warning(WARN_LANG_NESTED_NAMED_ENUM, input_file, line_number, "Nested named enums not currently supported (%s ignored)\n", Getattr(n,"name"));
@@ -4802,10 +4808,16 @@ public:
         result = SWIG_OK;
       }
     } else if (shall_emit_strong_enum(n)) {
+      // strong but not scoped
       if (!ImportMode) {
 	if (!in_class) {
-	  // strong but not scoped
-	  Setattr(n,"feature:emitonlychildren","");
+	  if (Getattr(n, "symtab")) {
+	    Setattr(n, "allocate:default_constructor", "1");
+	    Setattr(n, "allocate:default_destructor", "1");
+	    Setattr(n,"feature:emitonlychildren", "constructor destructor");
+	  } else {
+	    Setattr(n,"feature:emitonlychildren","");
+	  }
 	  result = classDeclaration(n);
 	  Delattr(n,"feature:emitonlychildren");
 	  if(result == SWIG_OK) {

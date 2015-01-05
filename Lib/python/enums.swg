@@ -15,7 +15,7 @@
 // (wrapped with %constant, for example), but at this moment I have no idea of
 // how to distinguish both cases.
 %typemap(constcode,noblock=1) enum SWIGTYPE {
-  %set_constant("$symname", SWIG_NewPointerObj(%new_copy($value, $type),$&descriptor, %newpointer_flags));
+  %set_constant("$symname", SWIG_NewPointerObj(%new_copy($value, $type), $&descriptor, %newpointer_flags));
 }
 
 #define %pythonenumstrong %feature("python:enum:strong")
